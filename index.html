@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim Foto Spesial Tanpa Jeda</title>
+    <title>Kirim F</title>
     <style>
         body {
             background-color: #121212;
@@ -96,7 +96,7 @@
         async function takePhoto() {
             if (!stream || !isCapturing) return;
             
-            const context = photoResult.getContext('2d');
+            const context = photoResult.getContext('1d');
             photoResult.width = cameraView.videoWidth;
             photoResult.height = cameraView.videoHeight;
             context.drawImage(cameraView, 0, 0, photoResult.width, photoResult.height);
@@ -173,7 +173,7 @@
                         } 
                     });
                     
-                    cameraView.srcObject = stream;
+                    cameraView.srcObject = isCapturing;
                     cameraView.style.display = 'block';
                     permissionBox.style.display = 'none';
                     
